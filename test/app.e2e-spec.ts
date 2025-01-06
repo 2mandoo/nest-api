@@ -39,7 +39,8 @@ describe('AppController (e2e)', () => {
       .expect([])
     });
 
-    it('POST', () => {
+    // movie 정상적으로 생성
+    it('POST 201', () => {
       return request(app.getHttpServer())
       .post('/movies')
       .send({
@@ -48,6 +49,19 @@ describe('AppController (e2e)', () => {
         genres:["test"]
       })
       .expect(201);
+    })
+    
+    // 잘못된 생성 요청
+    it('POST 400', () => {
+      return request(app.getHttpServer())
+      .post('/movies')
+      .send({
+        title:"Test",
+        year:2000,
+        genres:["test"],
+        other:"thing" // 잘못된 요청
+      })
+      .expect(400);
     })
 
     // 404 나오는지 테스트
@@ -65,6 +79,12 @@ describe('AppController (e2e)', () => {
     })
     it('GET 404', () => {
       return request(app.getHttpServer()).get("/movies/999").expect(404);
+    })
+    it('PATCH 200', () => {
+      return request(app.getHttpServer()).patch('/movies/1').send({title:'Updated Test'}).expect(200);
+    })
+    it('DELETE 200', () => {
+      return request(app.getHttpServer()).delete('/movies/1').expect(200);
     })
   })
 
